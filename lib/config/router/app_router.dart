@@ -9,15 +9,27 @@ final appRouter = GoRouter(
       path: SplashPage.pathRoute,
       builder: (context, state) => const SplashPage(),
     ),
-    GoRoute(
-      path: HomePage.pathRoute,
-      builder: (context, state) => const HomePage(),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          MainShellPage(navigationShell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: HomePage.pathRoute,
+              builder: (context, state) => const HomePage(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AboutPage.pathRoute,
+              builder: (context, state) => const AboutPage(),
+            ),
+          ],
+        ),
+      ],
     ),
-    // StatefulShellRoute.indexedStack(
-    //   builder: (context, state, navigationShell) => Main,
-    //   branches: [
-
-    //   ]
-    // )
   ],
 );
