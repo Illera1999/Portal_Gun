@@ -18,6 +18,16 @@ final appRouter = GoRouter(
             GoRoute(
               path: HomePage.pathRoute,
               builder: (context, state) => const HomePage(),
+              routes: [
+                GoRoute(
+                  path: CharacterDetailPage.pathRoute,
+                  builder: (context, state) {
+                    final rawId = state.pathParameters['id'];
+                    final characterId = int.tryParse(rawId ?? '');
+                    return CharacterDetailPage(characterId: characterId);
+                  },
+                ),
+              ],
             ),
           ],
         ),
