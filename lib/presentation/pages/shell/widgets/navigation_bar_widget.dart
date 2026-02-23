@@ -45,7 +45,7 @@ class NavigationBarWidget extends StatelessWidget {
                 child: _NavItem(
                   selected: currentIndex == 0,
                   icon: Icons.grid_view_rounded,
-                  label: 'HOME',
+                  label: 'INICIO',
                   activeColor: activeColor,
                   inactiveColor: inactiveColor,
                   onTap: () => onIndexSelected(0),
@@ -55,7 +55,7 @@ class NavigationBarWidget extends StatelessWidget {
                 child: _NavItem(
                   selected: currentIndex == 1,
                   icon: Icons.settings,
-                  label: 'SETTINGS',
+                  label: 'AJUSTES',
                   activeColor: activeColor,
                   inactiveColor: inactiveColor,
                   onTap: () => onIndexSelected(1),
