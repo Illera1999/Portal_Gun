@@ -76,151 +76,131 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final charactersController = ref.watch(providerCharactersController);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Consumer(
-          builder: (context, ref, child) {
-            return child!;
-          },
-          child: ref
-              .watch(providerCharactersController)
-              .when(
-                loading: () => const Center(child: CircularProgressWidget()),
-                error: (error, stackTrace) => SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Text('Error loading characters:\n$error'),
+        child: charactersController.when(
+          loading: () => const Center(child: CircularProgressWidget()),
+          error: (error, stackTrace) => SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Text('Error loading characters:\n$error'),
+          ),
+          data: (response) {
+            final page = response.data;
+            final characters = page?.results ?? const <CharacterEntity>[];
+            final screenWidth = MediaQuery.sizeOf(context).width;
+            final crossAxisCount = screenWidth >= 960
+                ? 4
+                : screenWidth >= 680
+                ? 3
+                : 2;
+
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Personajes de Rick y Morty',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.secondary,
+                            letterSpacing: -0.6,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ),
                 ),
-                data: (response) {
-                  final page = response.data;
-                  final characters = page?.results ?? const <CharacterEntity>[];
-                  final screenWidth = MediaQuery.sizeOf(context).width;
-                  final crossAxisCount = screenWidth >= 960
-                      ? 4
-                      : screenWidth >= 680
-                      ? 3
-                      : 2;
-
-                  return CustomScrollView(
-                    slivers: [
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Personajes de Rick y Morty',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.secondary,
-                                  letterSpacing: -0.6,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                            ],
-                          ),
-                        ),
+                if (characters.isEmpty)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Text('No personajes encontrados')),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    sliver: SliverGrid(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.72,
                       ),
-                      if (characters.isEmpty)
-                        const SliverFillRemaining(
-                          hasScrollBody: false,
-                          child: Center(
-                            child: Text('No personajes encontrados'),
-                          ),
-                        )
-                      else
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          sliver: SliverGrid(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  mainAxisSpacing: 16,
-                                  crossAxisSpacing: 16,
-                                  childAspectRatio: 0.72,
-                                ),
-                            delegate: SliverChildBuilderDelegate((
-                              context,
-                              index,
-                            ) {
-                              final character = characters[index];
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final character = characters[index];
 
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(22),
-                                  onTap: () => context.push(
-                                    '${HomePage.pathRoute}/${CharacterDetailPage.pathRoute}',
-                                    extra: character.id,
-                                  ),
-                                  child: CharacterCardWidget(
-                                    character: character,
-                                  ),
-                                ),
-                              );
-                            }, childCount: characters.length),
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(22),
+                            onTap: () => context.push(
+                              '${HomePage.pathRoute}/${CharacterDetailPage.pathRoute.replaceFirst(':id', '${character.id}')}',
+                            ),
+                            child: CharacterCardWidget(character: character),
                           ),
-                        ),
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              if (page != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                    'Cargados ${characters.length} personajes'
-                                    ' (página ${page.prevPage == null ? 1 : page.prevPage! + 1} de ${page.pages})',
-                                    style: const TextStyle(
-                                      color: Color(0xFF6B7280),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ElevatedButton(
-                                onPressed: page?.hasNextPage == true
-                                    ? () {
-                                        ref
-                                            .read(
-                                              providerCharactersController
-                                                  .notifier,
-                                            )
-                                            .loadNextPage();
-                                      }
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.secondary,
-                                  foregroundColor: Colors.white,
-                                  disabledBackgroundColor: const Color(
-                                    0xFFE5E7EB,
-                                  ),
-                                  disabledForegroundColor: const Color(
-                                    0xFF6B7280,
-                                  ),
-                                  minimumSize: const Size.fromHeight(48),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                ),
-                                child: Text(
-                                  page?.hasNextPage == true
-                                      ? 'Cargar más personajes'
-                                      : 'No hay más páginas',
-                                ),
+                        );
+                      }, childCount: characters.length),
+                    ),
+                  ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (page != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              'Cargados ${characters.length} personajes'
+                              ' (página ${page.prevPage == null ? 1 : page.prevPage! + 1} de ${page.pages})',
+                              style: const TextStyle(
+                                color: Color(0xFF6B7280),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ],
+                            ),
+                          ),
+                        ElevatedButton(
+                          onPressed: page?.hasNextPage == true
+                              ? () {
+                                  ref
+                                      .read(
+                                        providerCharactersController.notifier,
+                                      )
+                                      .loadNextPage();
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.secondary,
+                            foregroundColor: Colors.white,
+                            disabledBackgroundColor: const Color(0xFFE5E7EB),
+                            disabledForegroundColor: const Color(0xFF6B7280),
+                            minimumSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          child: Text(
+                            page?.hasNextPage == true
+                                ? 'Cargar más personajes'
+                                : 'No hay más páginas',
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

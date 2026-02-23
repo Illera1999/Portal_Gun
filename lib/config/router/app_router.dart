@@ -1,8 +1,11 @@
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portal_gun/lib.dart';
 
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final appRouter = GoRouter(
-  // initialLocation: SplashPage.pathRoute,
+  navigatorKey: _rootNavigatorKey,
   initialLocation: SplashPage.pathRoute,
   routes: [
     GoRoute(
@@ -20,11 +23,16 @@ final appRouter = GoRouter(
               builder: (context, state) => const HomePage(),
               routes: [
                 GoRoute(
+                  parentNavigatorKey: _rootNavigatorKey,
                   path: CharacterDetailPage.pathRoute,
-                  builder: (context, state) {
+                  redirect: (context, state) {
                     final rawId = state.pathParameters['id'];
-                    final characterId = int.tryParse(rawId ?? '');
-                    return CharacterDetailPage(characterId: characterId);
+                    final id = int.tryParse(rawId ?? '');
+                    return id == null ? HomePage.pathRoute : null;
+                  },
+                  builder: (context, state) {
+                    final id = int.parse(state.pathParameters['id']!);
+                    return CharacterDetailPage(characterId: id);
                   },
                 ),
               ],
