@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portal_gun/lib.dart';
 
 class HeroHeaderWidget extends StatelessWidget {
@@ -60,7 +61,12 @@ class HeroHeaderWidget extends StatelessWidget {
               shape: const CircleBorder(),
               child: InkWell(
                 customBorder: const CircleBorder(),
-                onTap: () => Navigator.of(context).maybePop(),
+                onTap: () {
+                  if (context.canPop()) {
+                    context.pop();
+                    return;
+                  }
+                },
                 child: const Padding(
                   padding: EdgeInsets.all(12),
                   child: Icon(

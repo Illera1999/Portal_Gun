@@ -82,9 +82,13 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: SafeArea(
         child: charactersController.when(
           loading: () => const Center(child: CircularProgressWidget()),
-          error: (error, stackTrace) => SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Text('Error loading characters:\n$error'),
+          error: (error, stackTrace) => GenericErrorWidget(
+            retryInvalidators: [
+              (ref) => ref.invalidate(providerCharactersController),
+            ],
+            title: 'No se pudo cargar el listado',
+            message:
+                'Ha ocurrido un error al cargar los personajes. Puedes reintentar ahora.',
           ),
           data: (response) {
             final page = response.data;

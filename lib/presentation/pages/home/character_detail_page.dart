@@ -14,6 +14,7 @@ class CharacterDetailPage extends ConsumerWidget {
     final id = characterId;
 
     return Scaffold(
+      backgroundColor: AppColors.secondary,
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -23,15 +24,13 @@ class CharacterDetailPage extends ConsumerWidget {
 
             return asyncCharacter.when(
               loading: () => const Center(child: CircularProgressWidget()),
-              error: (error, stack) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Text(
-                    'Error al cargar el detalle:\n$error',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
+              error: (error, stack) => GenericErrorWidget(
+                retryInvalidators: [
+                  (ref) => ref.invalidate(providerCharacterDetailController(id)),
+                ],
+                title: 'No se pudo cargar el personaje',
+                message:
+                    'Ha ocurrido un error al cargar el detalle. Puedes reintentar ahora.',
               ),
               data: (character) =>
                   _CharacterDetailContent(character: character),

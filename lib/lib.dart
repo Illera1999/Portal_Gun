@@ -23,6 +23,7 @@ export 'infrastructure/models/character_response_dto.dart';
 export 'infrastructure/repositories/rick_and_morty_repository_impl.dart';
 export 'infrastructure/startup/app_startup_service_impl.dart';
 export 'presentation/pages/about/about_page.dart';
+export 'presentation/shares/widgets/error/generic_error_widget.dart';
 export 'presentation/pages/home/character_detail_page.dart';
 export 'presentation/pages/home/home_page.dart';
 export 'presentation/pages/home/provider/character_detail_controller_provider.dart';
