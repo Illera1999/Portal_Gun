@@ -3,12 +3,22 @@ import 'package:go_router/go_router.dart';
 import 'package:portal_gun/lib.dart';
 
 class HeroHeaderWidget extends StatelessWidget {
-  const HeroHeaderWidget({super.key, required this.character});
+  const HeroHeaderWidget({
+    super.key,
+    required this.character,
+    this.bottomOverlayColor,
+  });
 
   final CharacterEntity character;
+  final Color? bottomOverlayColor;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final footerOverlayColor = bottomOverlayColor ?? theme.scaffoldBackgroundColor;
+    final imageFallbackColor = colorScheme.surfaceContainerHighest;
+
     return SizedBox(
       height: 420,
       child: Stack(
@@ -20,20 +30,18 @@ class HeroHeaderWidget extends StatelessWidget {
             loadingBuilder: (context, child, progress) {
               if (progress == null) return child;
               return Container(
-                color: const Color(0xFF101827),
+                color: imageFallbackColor,
                 alignment: Alignment.center,
-                child: const CircularProgressIndicator(
-                  color: AppColors.primary,
-                ),
+                child: CircularProgressIndicator(color: colorScheme.primary),
               );
             },
             errorBuilder: (context, error, stackTrace) {
               return Container(
-                color: const Color(0xFF101827),
+                color: imageFallbackColor,
                 alignment: Alignment.center,
-                child: const Icon(
+                child: Icon(
                   Icons.broken_image_outlined,
-                  color: Colors.white70,
+                  color: colorScheme.onSurfaceVariant,
                   size: 42,
                 ),
               );
@@ -47,7 +55,7 @@ class HeroHeaderWidget extends StatelessWidget {
                 colors: [
                   Colors.black.withValues(alpha: 0.08),
                   Colors.black.withValues(alpha: 0.35),
-                  AppColors.secondary.withValues(alpha: 0.98),
+                  footerOverlayColor.withValues(alpha: 0.98),
                 ],
                 stops: const [0.0, 0.45, 1.0],
               ),

@@ -8,7 +8,7 @@ void main() {
       final fakeRepo = _FakeRickAndMortyRepository(
         pages: {
           1: CustomResponse.success(
-            CharactersPageEntity(
+            CharacterPageEntity(
               count: 4,
               pages: 2,
               nextPage: 2,
@@ -17,7 +17,7 @@ void main() {
             ),
           ),
           2: CustomResponse.success(
-            CharactersPageEntity(
+            CharacterPageEntity(
               count: 4,
               pages: 2,
               nextPage: null,
@@ -35,12 +35,16 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final firstPage = await container.read(providerCharactersController.future);
+      final firstPage = await container.read(
+        providerCharactersController.future,
+      );
       expect(firstPage.status, CustomResponseStatus.ok);
       expect(firstPage.data, isNotNull);
       expect(firstPage.data!.results.map((e) => e.id).toList(), [1, 2]);
 
-      await container.read(providerCharactersController.notifier).loadNextPage();
+      await container
+          .read(providerCharactersController.notifier)
+          .loadNextPage();
 
       final current = container.read(providerCharactersController).requireValue;
       expect(current.status, CustomResponseStatus.ok);
@@ -55,7 +59,7 @@ void main() {
         final fakeRepo = _FakeRickAndMortyRepository(
           pages: {
             1: CustomResponse.success(
-              CharactersPageEntity(
+              CharacterPageEntity(
                 count: 4,
                 pages: 2,
                 nextPage: 2,
@@ -63,7 +67,7 @@ void main() {
                 results: [_character(1), _character(2)],
               ),
             ),
-            2: const CustomResponse<CharactersPageEntity>(
+            2: const CustomResponse<CharacterPageEntity>(
               status: CustomResponseStatus.serverError,
             ),
           },
@@ -77,9 +81,13 @@ void main() {
         addTearDown(container.dispose);
 
         await container.read(providerCharactersController.future);
-        await container.read(providerCharactersController.notifier).loadNextPage();
+        await container
+            .read(providerCharactersController.notifier)
+            .loadNextPage();
 
-        final current = container.read(providerCharactersController).requireValue;
+        final current = container
+            .read(providerCharactersController)
+            .requireValue;
         expect(current.status, CustomResponseStatus.serverError);
         expect(current.data, isNotNull);
         expect(current.data!.results.map((e) => e.id).toList(), [1, 2]);
@@ -91,7 +99,7 @@ void main() {
       final fakeRepo = _FakeRickAndMortyRepository(
         pages: {
           1: CustomResponse.success(
-            CharactersPageEntity(
+            CharacterPageEntity(
               count: 2,
               pages: 1,
               nextPage: null,
@@ -110,7 +118,9 @@ void main() {
       addTearDown(container.dispose);
 
       await container.read(providerCharactersController.future);
-      await container.read(providerCharactersController.notifier).loadNextPage();
+      await container
+          .read(providerCharactersController.notifier)
+          .loadNextPage();
 
       final current = container.read(providerCharactersController).requireValue;
       expect(current.status, CustomResponseStatus.ok);
@@ -124,7 +134,7 @@ void main() {
         final fakeRepo = _FakeRickAndMortyRepository(
           pages: {
             1: CustomResponse.success(
-              CharactersPageEntity(
+              CharacterPageEntity(
                 count: 4,
                 pages: 2,
                 nextPage: 2,
@@ -132,7 +142,7 @@ void main() {
                 results: [_character(1), _character(2)],
               ),
             ),
-            2: const CustomResponse<CharactersPageEntity>(
+            2: const CustomResponse<CharacterPageEntity>(
               status: CustomResponseStatus.ok,
             ),
           },
@@ -146,9 +156,13 @@ void main() {
         addTearDown(container.dispose);
 
         await container.read(providerCharactersController.future);
-        await container.read(providerCharactersController.notifier).loadNextPage();
+        await container
+            .read(providerCharactersController.notifier)
+            .loadNextPage();
 
-        final current = container.read(providerCharactersController).requireValue;
+        final current = container
+            .read(providerCharactersController)
+            .requireValue;
         expect(current.status, CustomResponseStatus.unknown);
         expect(current.data, isNotNull);
         expect(current.data!.results.map((e) => e.id).toList(), [1, 2]);
@@ -162,7 +176,7 @@ void main() {
         final fakeRepo = _FakeRickAndMortyRepository(
           pages: {
             1: CustomResponse.success(
-              CharactersPageEntity(
+              CharacterPageEntity(
                 count: 4,
                 pages: 2,
                 nextPage: 2,
@@ -171,9 +185,7 @@ void main() {
               ),
             ),
           },
-          exceptionsByPage: {
-            2: Exception('network down'),
-          },
+          exceptionsByPage: {2: Exception('network down')},
         );
 
         final container = ProviderContainer(
@@ -184,9 +196,13 @@ void main() {
         addTearDown(container.dispose);
 
         await container.read(providerCharactersController.future);
-        await container.read(providerCharactersController.notifier).loadNextPage();
+        await container
+            .read(providerCharactersController.notifier)
+            .loadNextPage();
 
-        final current = container.read(providerCharactersController).requireValue;
+        final current = container
+            .read(providerCharactersController)
+            .requireValue;
         expect(current.status, CustomResponseStatus.unknown);
         expect(current.data, isNotNull);
         expect(current.data!.results.map((e) => e.id).toList(), [1, 2]);
@@ -197,7 +213,7 @@ void main() {
     test('build exposes async error when first page is not ok', () async {
       final fakeRepo = _FakeRickAndMortyRepository(
         pages: {
-          1: const CustomResponse<CharactersPageEntity>(
+          1: const CustomResponse<CharacterPageEntity>(
             status: CustomResponseStatus.serverError,
           ),
         },
@@ -210,11 +226,12 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final subscription = container.listen<AsyncValue<CustomResponse<CharactersPageEntity>>>(
-        providerCharactersController,
-        (previous, next) {},
-        fireImmediately: true,
-      );
+      final subscription = container
+          .listen<AsyncValue<CustomResponse<CharacterPageEntity>>>(
+            providerCharactersController,
+            (previous, next) {},
+            fireImmediately: true,
+          );
       addTearDown(subscription.close);
 
       await Future<void>.delayed(Duration.zero);
@@ -233,19 +250,21 @@ class _FakeRickAndMortyRepository implements RickAndMortyRepository {
     this.exceptionsByPage = const {},
   });
 
-  final Map<int, CustomResponse<CharactersPageEntity>> pages;
+  final Map<int, CustomResponse<CharacterPageEntity>> pages;
   final Map<int, Exception> exceptionsByPage;
   int getCharactersCalls = 0;
 
   @override
-  Future<CustomResponse<CharactersPageEntity>> getCharacters({int page = 1}) async {
+  Future<CustomResponse<CharacterPageEntity>> getCharacters({
+    int page = 1,
+  }) async {
     getCharactersCalls++;
 
     final exception = exceptionsByPage[page];
     if (exception != null) throw exception;
 
     return pages[page] ??
-        const CustomResponse<CharactersPageEntity>(
+        const CustomResponse<CharacterPageEntity>(
           status: CustomResponseStatus.notFound,
         );
   }

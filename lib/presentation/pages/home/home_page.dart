@@ -14,7 +14,7 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   late final ProviderSubscription<
-    AsyncValue<CustomResponse<CharactersPageEntity>>
+    AsyncValue<CustomResponse<CharacterPageEntity>>
   >
   _snackbarSub;
 
@@ -77,8 +77,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final charactersController = ref.watch(providerCharactersController);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: charactersController.when(
           loading: () => const Center(child: CircularProgressWidget()),
@@ -108,14 +111,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Personajes de Rick y Morty',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.secondary,
-                            letterSpacing: -0.6,
-                          ),
+                          style:
+                              textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: colorScheme.onSurface,
+                                letterSpacing: -0.6,
+                              ) ??
+                              TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: colorScheme.onSurface,
+                                letterSpacing: -0.6,
+                              ),
                         ),
                         const SizedBox(height: 16),
                       ],
@@ -165,8 +174,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                             child: Text(
                               'Cargados ${characters.length} personajes'
                               ' (página ${page.prevPage == null ? 1 : page.prevPage! + 1} de ${page.pages})',
-                              style: const TextStyle(
-                                color: Color(0xFF6B7280),
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -183,10 +192,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.secondary,
-                            foregroundColor: Colors.white,
-                            disabledBackgroundColor: const Color(0xFFE5E7EB),
-                            disabledForegroundColor: const Color(0xFF6B7280),
+                            backgroundColor: colorScheme.primary,
+                            foregroundColor: colorScheme.onPrimary,
+                            disabledBackgroundColor:
+                                colorScheme.surfaceContainerHighest,
+                            disabledForegroundColor:
+                                colorScheme.onSurfaceVariant,
                             minimumSize: const Size.fromHeight(48),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),

@@ -1,7 +1,7 @@
 import 'package:portal_gun/lib.dart';
 
-class CharactersPageEntity {
-  const CharactersPageEntity({
+class CharacterPageEntity {
+  const CharacterPageEntity({
     required this.count,
     required this.pages,
     required this.nextPage,
@@ -17,7 +17,7 @@ class CharactersPageEntity {
 
   bool get hasNextPage => nextPage != null;
 
-  CharactersPageEntity.empty({
+  CharacterPageEntity.empty({
     int? count,
     int? pages,
     int? nextPage,

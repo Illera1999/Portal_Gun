@@ -12,9 +12,10 @@ class CharacterDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = characterId;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppColors.secondary,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, child) {
@@ -49,10 +50,20 @@ class _CharacterDetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentMuted = AppColors.primary.withValues(alpha: 0.18);
-    final cardBg = const Color(0xFF141C2D);
-    final cardBorder = const Color(0xFF23304B);
-    final mutedText = AppColors.background.withValues(alpha: 0.68);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    final accentColor = colorScheme.primary;
+    final accentMuted = accentColor.withValues(alpha: isDark ? 0.22 : 0.14);
+    final cardBg = isDark
+        ? colorScheme.surfaceContainerHigh
+        : colorScheme.surface;
+    final cardBorder = colorScheme.outlineVariant.withValues(
+      alpha: isDark ? 0.60 : 0.35,
+    );
+    final mutedText = colorScheme.onSurfaceVariant;
+    final valueText = colorScheme.onSurface;
 
     return Center(
       child: ConstrainedBox(
@@ -61,7 +72,10 @@ class _CharacterDetailContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              HeroHeaderWidget(character: character),
+              HeroHeaderWidget(
+                character: character,
+                bottomOverlayColor: theme.scaffoldBackgroundColor,
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 16, 18, 24),
                 child: Column(
@@ -76,6 +90,7 @@ class _CharacterDetailContent extends StatelessWidget {
                             backgroundColor: cardBg,
                             borderColor: cardBorder,
                             mutedColor: mutedText,
+                            valueColor: valueText,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -86,6 +101,7 @@ class _CharacterDetailContent extends StatelessWidget {
                             backgroundColor: cardBg,
                             borderColor: cardBorder,
                             mutedColor: mutedText,
+                            valueColor: valueText,
                           ),
                         ),
                       ],
@@ -96,10 +112,11 @@ class _CharacterDetailContent extends StatelessWidget {
                       value: character.origin.name,
                       icon: Icons.public_rounded,
                       iconBackground: accentMuted,
-                      iconColor: AppColors.primary,
+                      iconColor: accentColor,
                       backgroundColor: cardBg,
                       borderColor: cardBorder,
                       mutedColor: mutedText,
+                      valueColor: valueText,
                     ),
                     const SizedBox(height: 12),
                     WideInfoCardWidget(
@@ -107,10 +124,11 @@ class _CharacterDetailContent extends StatelessWidget {
                       value: character.location.name,
                       icon: Icons.location_on_rounded,
                       iconBackground: accentMuted,
-                      iconColor: AppColors.primary,
+                      iconColor: accentColor,
                       backgroundColor: cardBg,
                       borderColor: cardBorder,
                       mutedColor: mutedText,
+                      valueColor: valueText,
                     ),
                     const SizedBox(height: 20),
                   ],

@@ -11,6 +11,7 @@ class WideInfoCardWidget extends StatelessWidget {
     required this.backgroundColor,
     required this.borderColor,
     required this.mutedColor,
+    required this.valueColor,
   });
 
   final String title;
@@ -21,6 +22,7 @@ class WideInfoCardWidget extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
   final Color mutedColor;
+  final Color valueColor;
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +53,8 @@ class WideInfoCardWidget extends StatelessWidget {
                   value.isEmpty ? '-' : value,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: valueColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),

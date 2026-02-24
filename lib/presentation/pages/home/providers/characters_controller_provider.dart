@@ -4,15 +4,15 @@ import 'package:portal_gun/lib.dart';
 final providerCharactersController =
     AsyncNotifierProvider<
       CharactersController,
-      CustomResponse<CharactersPageEntity>
+      CustomResponse<CharacterPageEntity>
     >(CharactersController.new);
 
 class CharactersController
-    extends AsyncNotifier<CustomResponse<CharactersPageEntity>> {
+    extends AsyncNotifier<CustomResponse<CharacterPageEntity>> {
   bool _isLoadingNext = false;
 
   @override
-  Future<CustomResponse<CharactersPageEntity>> build() async {
+  Future<CustomResponse<CharacterPageEntity>> build() async {
     final repo = ref.watch(providerRickAndMortyRepository);
     final response = await repo.getCharacters(page: 1);
     if (response.status != CustomResponseStatus.ok || response.data == null) {
@@ -39,7 +39,7 @@ class CharactersController
 
       if (response.status != CustomResponseStatus.ok) {
         state = AsyncData(
-          CustomResponse<CharactersPageEntity>(
+          CustomResponse<CharacterPageEntity>(
             status: response.status,
             data: currentPage,
           ),
@@ -50,7 +50,7 @@ class CharactersController
       final nextPage = response.data;
       if (nextPage == null) {
         state = AsyncData(
-          CustomResponse<CharactersPageEntity>(
+          CustomResponse<CharacterPageEntity>(
             status: CustomResponseStatus.unknown,
             data: currentPage,
           ),
@@ -60,7 +60,7 @@ class CharactersController
 
       state = AsyncData(
         CustomResponse.success(
-          CharactersPageEntity(
+          CharacterPageEntity(
             count: nextPage.count,
             pages: nextPage.pages,
             nextPage: nextPage.nextPage,
@@ -71,7 +71,7 @@ class CharactersController
       );
     } catch (_) {
       state = AsyncData(
-        CustomResponse<CharactersPageEntity>(
+        CustomResponse<CharacterPageEntity>(
           status: CustomResponseStatus.unknown,
           data: currentPage,
         ),

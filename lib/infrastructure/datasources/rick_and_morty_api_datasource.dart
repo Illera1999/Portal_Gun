@@ -33,7 +33,7 @@ class RickAndMortyApiDatasource implements RickAndMortyDatasource {
   }
 
   @override
-  Future<CustomResponse<CharactersPageEntity>> getCharacters({
+  Future<CustomResponse<CharacterPageEntity>> getCharacters({
     int page = 1,
   }) async {
     try {
@@ -44,7 +44,7 @@ class RickAndMortyApiDatasource implements RickAndMortyDatasource {
 
       final data = response.data;
       if (data == null) {
-        return const CustomResponse<CharactersPageEntity>(
+        return const CustomResponse<CharacterPageEntity>(
           status: CustomResponseStatus.serverError,
         );
       }
@@ -57,13 +57,13 @@ class RickAndMortyApiDatasource implements RickAndMortyDatasource {
       if (status == CustomResponseStatus.notFound) {
         return CustomResponse(
           status: status,
-          data: CharactersPageEntity.empty(),
+          data: CharacterPageEntity.empty(),
         );
       }
 
-      return CustomResponse<CharactersPageEntity>(status: status);
+      return CustomResponse<CharacterPageEntity>(status: status);
     } catch (_) {
-      return const CustomResponse<CharactersPageEntity>(
+      return const CustomResponse<CharacterPageEntity>(
         status: CustomResponseStatus.unknown,
       );
     }

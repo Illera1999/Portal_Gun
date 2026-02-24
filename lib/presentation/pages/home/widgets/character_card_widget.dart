@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portal_gun/config/theme/app_color.dart';
+import 'package:portal_gun/config/theme/app_colors.dart';
 import 'package:portal_gun/domain/entities/character_entity.dart';
 
 class CharacterCardWidget extends StatelessWidget {
@@ -9,18 +9,31 @@ class CharacterCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final statusLabel = character.status.toUpperCase();
     final statusColor = _statusColor(character.status);
+    final cardColor = isDark
+        ? colorScheme.surfaceContainerLow
+        : colorScheme.surface;
+    final footerColor = isDark
+        ? colorScheme.surfaceContainerHigh
+        : AppColors.secondary;
+    final nameColor = isDark ? colorScheme.onSurface : Colors.white;
+    final statusLabelColor = isDark
+        ? colorScheme.onSurfaceVariant
+        : const Color(0xFFA8B4CC);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: BorderRadius.circular(22),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x140F172A),
+            color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.08),
             blurRadius: 16,
-            offset: Offset(0, 8),
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -36,7 +49,7 @@ class CharacterCardWidget extends StatelessWidget {
                 if (loadingProgress == null) return child;
 
                 return Container(
-                  color: AppColors.background,
+                  color: colorScheme.surfaceContainerHighest,
                   alignment: Alignment.center,
                   child: const SizedBox(
                     width: 20,
@@ -47,18 +60,18 @@ class CharacterCardWidget extends StatelessWidget {
               },
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: AppColors.background,
+                  color: colorScheme.surfaceContainerHighest,
                   alignment: Alignment.center,
-                  child: const Icon(
+                  child: Icon(
                     Icons.broken_image_outlined,
-                    color: AppColors.secondary,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 );
               },
             ),
           ),
           Container(
-            color: AppColors.secondary,
+            color: footerColor,
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,8 +100,8 @@ class CharacterCardWidget extends StatelessWidget {
                         statusLabel,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Color(0xFFA8B4CC),
+                        style: TextStyle(
+                          color: statusLabelColor,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.8,
@@ -102,8 +115,8 @@ class CharacterCardWidget extends StatelessWidget {
                   character.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: nameColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     height: 1.15,

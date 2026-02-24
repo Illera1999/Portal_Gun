@@ -3,8 +3,8 @@ import 'package:portal_gun/lib.dart';
 class CharacterPageMapper {
   const CharacterPageMapper._();
 
-  static CharactersPageEntity toEntity(CharactersResponseDto dto) {
-    return CharactersPageEntity(
+  static CharacterPageEntity toEntity(CharactersResponseDto dto) {
+    return CharacterPageEntity(
       count: dto.info.count,
       pages: dto.info.pages,
       nextPage: _extractPage(dto.info.next),

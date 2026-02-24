@@ -11,7 +11,7 @@ Future<void> bootstrap(AppConfig appConfig) async {
   runApp(
     ProviderScope(
       overrides: [providerAppConfig.overrideWithValue(appConfig)],
-      child: PeakProFitApp(config: appConfig),
+      child: PortalGunApp(config: appConfig),
     ),
   );
 }
