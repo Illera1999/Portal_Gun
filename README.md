@@ -1,6 +1,6 @@
 # Portal Gun
 
-Aplicación Flutter de prueba técnica basada en la API pública de Rick and Morty.
+Aplicación Flutter de prueba basada en la API pública de Rick and Morty.
 
 Incluye:
 - navegación con `go_router` (tabs + detalle),

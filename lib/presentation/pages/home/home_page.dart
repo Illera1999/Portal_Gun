@@ -86,9 +86,9 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: charactersController.when(
           loading: () => const Center(child: CircularProgressWidget()),
           error: (error, stackTrace) => GenericErrorWidget(
-            retryInvalidators: [
-              (ref) => ref.invalidate(providerCharactersController),
-            ],
+            onRetry: (ref) async {
+              ref.invalidate(providerCharactersController);
+            },
             title: 'No se pudo cargar el listado',
             message:
                 'Ha ocurrido un error al cargar los personajes. Puedes reintentar ahora.',

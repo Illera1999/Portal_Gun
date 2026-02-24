@@ -26,9 +26,9 @@ class CharacterDetailPage extends ConsumerWidget {
             return asyncCharacter.when(
               loading: () => const Center(child: CircularProgressWidget()),
               error: (error, stack) => GenericErrorWidget(
-                retryInvalidators: [
-                  (ref) => ref.invalidate(providerCharacterDetailController(id)),
-                ],
+                onRetry: (ref) async {
+                  ref.invalidate(providerCharacterDetailController(id));
+                },
                 title: 'No se pudo cargar el personaje',
                 message:
                     'Ha ocurrido un error al cargar el detalle. Puedes reintentar ahora.',
