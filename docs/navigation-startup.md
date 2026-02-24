@@ -27,6 +27,13 @@ Ventajas:
 - conserva estado por pestaña
 - es escalable para añadir más ramas
 
+## Tabla de rutas (actual)
+
+- `/startup/splash`
+- `/home`
+- `/home/character/:id`
+- `/about`
+
 ## Detalle de personaje
 
 Ruta:
@@ -34,6 +41,7 @@ Ruta:
 
 El detalle se renderiza en el `root navigator` (mediante `parentNavigatorKey`) para que:
 - no se muestre el bottom navigation bar encima del detalle
+- se comporte como una pantalla “encima” del shell
 
 ## Deep links
 
@@ -43,6 +51,9 @@ La configuración está preparada para deep links porque:
 
 Ejemplo válido:
 - `/home/character/1`
+
+Ejemplo inválido (redirige):
+- `/home/character/abc` -> redirección a `/home`
 
 ## Startup / Splash (preparado para inicialización real)
 
@@ -57,3 +68,15 @@ Actualmente el startup:
 - navega a `Home`
 
 Aunque algunas tareas estén como `TODO`, la estructura ya está preparada para un arranque real (auth, config remota, precarga ligera, etc.).
+
+## Por qué mantener Splash aunque hoy sea simple
+
+- Deja preparado un punto único de inicialización.
+- Evita mezclar carga de servicios en el árbol principal de UI.
+- Facilita futuras ampliaciones (auth, onboarding, feature flags, warm-up, etc.).
+
+## Posibles mejoras
+
+- Añadir redirects globales si se introduce autenticación.
+- Definir rutas nombradas (`name`) para navegación más segura (`pushNamed`) en flujos complejos.
+- Añadir tests de navegación (widgets/integration) para validar rutas y redirects.
